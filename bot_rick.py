@@ -4,7 +4,7 @@ import compress_fasttext
 from gensim.matutils import hellinger
 
 def get_ans(model, question, dialog_df):
-    min_dist = float("inf")
+    min_dist = 100
     index_ans = 0
     current_question_vector = model[question]
     for i in range(len(dialog_df)):
@@ -12,7 +12,7 @@ def get_ans(model, question, dialog_df):
         if tmp < min_dist:
             index_ans = i
             min_dist = tmp
-    if min_dist == float("inf"):
+    if min_dist == 100:
         print("WTF Morty?!")
     print(index_ans)
     return dialog_df.iloc[index_ans]["rick_answer"]
@@ -48,8 +48,8 @@ def main():
     small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load('ft_freqprune_100K_20K_pq_100.bin')
     dialog_df = get_df(small_model)
 
-    question = "it's a joke?"
-    question = "i'm sad boy"
+    #question = "it's a joke?"
+    #question = "i'm sad boy"
     #print("Enter question to Rick:")
     while(1):
         question = processed_question(input())
