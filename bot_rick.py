@@ -23,7 +23,7 @@ def get_df(model):
     "question_vector": [],
     "rick_answer": []}
 
-    for i in range(1, len(df)):
+    for i in range(len(df)):
         if df.iloc[i]["name"] == "Rick":
             processed_sentences = re.sub('[^a-zA-Z]', ' ', df.iloc[i - 1]["line"])
             processed_sentences = re.sub(r'\s+', ' ', processed_sentences)
