@@ -1,14 +1,15 @@
-import pandas as pd
 import re
 import compress_fasttext
+import pandas as pd
+from scipy.spatial import distance
 from gensim.matutils import hellinger
 
-def get_ans(model, question, dialog_df):
+def get_ans(question, model, dialog_df):
     min_dist = 100
     index_ans = 0
     current_question_vector = model[question]
     for i in range(len(dialog_df)):
-        tmp = hellinger(current_question_vector, dialog_df.iloc[i]["question_vector"])
+        tmp = distance.cosine(current_question_vector, dialog_df.iloc[i]["question_vector"])
         if tmp < min_dist:
             index_ans = i
             min_dist = tmp
@@ -43,6 +44,11 @@ def processed_question(line):
     processed_question = re.sub(r'\s+', ' ', processed_question).strip()
     return processed_question
 
+def precompute_data():
+    model = compress_fasttext.models.CompressedFastTextKeyedVectors.load('ft_freqprune_100K_20K_pq_100.bin')
+    dialog_df = get_df(model)
+    return model, dialog_df
+
 def main():
     print("run")
     small_model = compress_fasttext.models.CompressedFastTextKeyedVectors.load('ft_freqprune_100K_20K_pq_100.bin')
@@ -54,7 +60,7 @@ def main():
     while(1):
         question = processed_question(input())
 
-        answer = get_ans(small_model, question, dialog_df)
+        answer = get_ans( question, small_model, dialog_df)
         print(answer)
 
 
